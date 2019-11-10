@@ -1,5 +1,6 @@
 'use strict';
 
+const dummySubscriptionId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
 var authorizationToken = null;
 var subscriptions = null;
 var mpnIdMap = {};
@@ -40,7 +41,7 @@ function showMessageOnAzurePortalTopLoop() {
 			}
 		});
 	}else{
-		setTimeout( () => showMessageOnAzurePortalTopLoop(), 2000);
+		setTimeout( () => showMessageOnAzurePortalTopLoop(), 1000);
 	}
 }
 showMessageOnAzurePortalTopLoop();
@@ -50,22 +51,45 @@ function doURICheckLoop() {
 	){
 		doUpdateSubscriptionlist();
 	}
-	setTimeout( () => doURICheckLoop(), 2000);
+	setTimeout( () => doURICheckLoop(), 1000);
 }
 doURICheckLoop();
 
 function doUpdateSubscriptionlist(){
-	console.log('[Azure Partner Help Extention] doUpdateSubscriptionlist()')
+	// console.log('[Azure Partner Help Extention] doUpdateSubscriptionlist()')
 
 	// first element is header
 	const resourceArray = jQuery('div.azc-grid-tableContainer.azc-br-muted table tr:not(:first)');
 	resourceArray.each( (index, elem) => {
-		const subscriptionId = jQuery(elem).find('td.azc-grid-cell.azc-br-muted:nth-child(3)').text().toLowerCase();
-		//console.log( "subscriptionId = " + subscriptionId);
-		if(subscriptionId && mpnIdMap[subscriptionId]){
+		var subscirptionIdElem = jQuery(elem).find('td.azc-grid-cell.azc-br-muted:nth-child(3)');
+		const subscriptionIdText = jQuery(subscirptionIdElem).text();
+		const subscriptionId = subscriptionIdText.substring(0, dummySubscriptionId.length);
+		if(mpnIdMap[subscriptionId]){
 			var updateText = subscriptionId + " - " + mpnIdMap[subscriptionId].partnerName;
+			jQuery(subscirptionIdElem).text(updateText);
+			// console.log("[Azure Partner Help Extention] doUpdateSubscriptionlist(): " + updateText);
+			// There are no partners on this subscription or this extension hasn't still added a link into this DOM element
 		}
-		//console.log(updateText);
-		jQuery(elem).find('td.azc-grid-cell.azc-br-muted:nth-child(3)').text(updateText)
+		/*
+		else if( mpnIdMap[subscriptionId] == null && subscriptionIdText.length == subscriptionId.length){
+			var linkElem = jQuery("<a class='my-azure-partner-help-extension'></a>").text("Enable Partner Admin Link with your MPN ID");
+			linkElem.click( function (){
+				port.postMessage({
+					name: "set-mpnid-function",
+					subscriptionId : subscriptionId,
+					partnerId : "1316820" //mpnIdMap[subscriptionId].partnerId
+				});
+			});
+			jQuery(subscirptionIdElem).append(linkElem);
+			console.log("[Azure Partner Help Extention] doUpdateSubscriptionlist(): add a link on " + jQuery(subscirptionIdElem).text());
+		}
+		*/
+		//console.log("==================================================");
+		//console.log(subscriptionId);
+		//console.log(subscriptionIdText);
+		//console.log(mpnIdMap);
+		//console.log(mpnIdMap[subscriptionId]);
+		//if(mpnIdMap[subscriptionId]) console.log(mpnIdMap[subscriptionId].partnerName);
+		//if(mpnIdMap[subscriptionId]) console.log(subscriptionId.includes(mpnIdMap[subscriptionId].partnerName));
 	});
 }

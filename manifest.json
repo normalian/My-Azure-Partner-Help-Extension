@@ -1,16 +1,26 @@
 {
 	"name": "My Azure Partner Help Extension",
-	"version": "0.0.1",
+	"version": "0.0.4",
 	"manifest_version": 2,
 	"description": "You can simplify your work as partners by using this extension",
 	"browser_action": {
 		"default_icon": "img/icon128.png",
 		"icons": { "16": "img/icon16.png",
 				   "48": "img/icon48.png",
-				   "128": "img/icon128.png" }
+				   "128": "img/icon128.png" },
+				   "scripts": ["jquery-3.4.1.min.js", "popup.js"],
+				   "css": ["css/popup.css"],
+				   "default_popup": "popup.html"
 	  },
 	"permissions": [
-		"<all_urls>","webRequest","webRequestBlocking", "clipboardRead",  "storage"
+		"https://portal.azure.com/*",
+		"https://afd.hosting.portal.azure.net/",
+		"https://web.vortex.data.microsoft.com/",
+		"https://management.azure.com/*",
+		"https://s2.billing.ext.azure.com/*",
+		"webRequest",
+		"webRequestBlocking", 
+		"storage"
 	],
 	"content_scripts": [
 	{

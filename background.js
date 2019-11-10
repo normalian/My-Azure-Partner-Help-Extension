@@ -40,7 +40,7 @@ chrome.runtime.onConnect.addListener( port => {
 				});
 			});
 			return true;
-		}else if( arg.name="get-mpnids-function"){
+		}else if( arg.name == "get-mpnids-function"){
 			//console.log("################################# get-mpnids-function");
 			$.ajax({
 				type: 'GET',
@@ -54,7 +54,7 @@ chrome.runtime.onConnect.addListener( port => {
 					+ '&subscriptionGuid=' + arg.subscriptionId
 			}).done( function( response ){
 				// {"partnerId":"your MPN ID","partnerName":"your partner name"}
-				//console.log("################################# response start");
+				//console.log("################################# get-mpnids-function#response start");
 				//console.log(response);
 				port.postMessage( {
 					name: "get-mpnids-function",
@@ -64,6 +64,62 @@ chrome.runtime.onConnect.addListener( port => {
 				});
 			});
 			return true;
+		}else if( arg.name == "validate-mpnid-function"){
+			// Request URL: https://s2.billing.ext.azure.com/api/Billing/Subscription/ValidatePartnerId?api-version=2019-01-14
+                        // {"subscriptionGuid":"subscription ID","partnerId":"your partnerid"}
+                        // {"partnerId":"your partnerid","partnerName":"your partner name"}
+						// {"message":"Unable to access the partner information at the moment. Please try again later.","httpStatusCode":"NotFound","xMsServerRequestId":null,"stackTrace":null}
+						$.ajax({
+							type: 'POST',
+							headers: {
+								'Authorization': authorizationToken,
+								'Content-Type': 'application/json'
+							},
+							data: JSON.stringify({
+								"subscriptionGuid" : arg.subscriptionId,
+								"partnerId": arg.partnerId
+							}),
+							// https://docs.microsoft.com/en-us/rest/api/resources/resourcegroups#ResourceGroups_List
+							url: 'https://s2.billing.ext.azure.com/api/Billing/Subscription/ValidatePartnerId'
+								+ '?api-version=2019-01-14'
+								//+ '&subscriptionGuid=' + arg.subscriptionId
+						}).done( function( response ){
+							// {"partnerId":"your MPN ID","partnerName":"your partner name"}
+							//console.log("################################# response start");
+							//console.log(response);
+							port.postMessage( {
+								name: "validate-mpnid-function",
+							});
+						});
+						return true;
+		}else if( arg.name == "set-mpnid-function"){
+			//console.log("################################# set-mpnid-function");
+			$.ajax({
+				type: 'POST',
+				headers: {
+					'Authorization': authorizationToken,
+					'Content-Type': 'application/json'
+				},
+				data: JSON.stringify({
+					"subscriptionGuid" : arg.subscriptionId,
+					"partnerId": arg.partnerId
+				}),
+				// https://docs.microsoft.com/en-us/rest/api/resources/resourcegroups#ResourceGroups_List
+				url: 'https://s2.billing.ext.azure.com/api/Billing/Subscription/SetPartnerInformation'
+					+ '?api-version=2019-01-14'
+					//+ '&subscriptionGuid=' + arg.subscriptionId
+			}).done( function( response ){
+				// {"partnerId":"your MPN ID","partnerName":"your partner name"}
+				//console.log("################################# response start");
+				//console.log(response);
+				port.postMessage( {
+					name: "set-mpnid-function",
+				});
+			});
+			return true;
+			// Post Request URL: https://s2.billing.ext.azure.com/api/Billing/Subscription/SetPartnerInformation?api-version=2019-01-14
+			// {"subscriptionGuid":"5d716c43-37ab-4cb1-84c8-1e0e4de4086a","partnerId":"1316820"}
+			// no response
 		}
 	});
 });

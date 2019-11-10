@@ -5,11 +5,12 @@ This extension works to enhance user experience of [Microsoft Azure Portal](http
 
 ## How to install
 
-Visit https://chrome.google.com/webstore/detail/hnndmmbjpcjdlpmdidocdgmecphmnbkp/ with Chrome browser and add this extension.
+Visit https://chrome.google.com/webstore/detail/my-azure-partner-help-ext/hnndmmbjpcjdlpmdidocdgmecphmnbkp with Chrome browser and add this extension.
+
 
 # Offering features
 
-No.1: add partner names on your subscritpion ID list like below
+No.1: add partner names on your subscritpion ID list like below. You can avoid to miss to put MPN IDs into Azure subscriptions
 
 ![extension usage image01](img/use-image-01.png "extension usage image01")
 
